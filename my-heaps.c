@@ -16,7 +16,8 @@ void heap_init() {
     int i;
     int err = -1;
     
-    for ( i=0; i<NHEAPS; i++ ) {
+    for ( i = 0; i < NHEAPS; i++ ) {
+
         heaps_ptr[i] = malloc ( sizeof ( struct heap_info ) );
         heaps_ptr[i] -> heap_length = SIZE;
         
@@ -46,25 +47,27 @@ void* shmalloc( int size, int index ) {
     if ( index >= NHEAPS || index < 0 ) {
     
         printf( "Error: Heap index out of bound!\n" );
-    
+        
+        return NULL;
+        
     } else {
         
         printf( "Allocate %d bytes in heap %d\n" , 
             size, index );
         
         printf( "Before allocation, size of heap %d is: %d\n", 
-            index, (heaps_ptr[index]-> heap_curr - heaps_ptr[index]-> heap_base ) ); 
+            index, ( heaps_ptr[index] -> heap_curr - heaps_ptr[index] -> heap_base ) ); 
         
-        orig = heaps_ptr[index]-> heap_curr;
+        orig = heaps_ptr[index] -> heap_curr;
 
-        heaps_ptr[index]->heap_curr += size;
+        heaps_ptr[index] -> heap_curr += size;
 
-        if ( (heaps_ptr[index]-> heap_curr - heaps_ptr[index]-> heap_base) < 
-            heaps_ptr[index]-> heap_length ){
-            heaps_ptr[index]-> heap_curr += size;
+        if ( ( heaps_ptr[index] -> heap_curr - heaps_ptr[index] -> heap_base ) < 
+            heaps_ptr[index] -> heap_length ){
+            heaps_ptr[index] -> heap_curr += size;
 
             printf( "After allocation, size of heap %d is: %d\n",
-                        index, (heaps_ptr[index]-> heap_curr - heaps_ptr[index]-> heap_base ) );
+                        index, ( heaps_ptr[index] -> heap_curr - heaps_ptr[index] -> heap_base ) );
             return orig;
         
         } else{
@@ -78,16 +81,14 @@ void* shmalloc( int size, int index ) {
     
     }
     
-    /*for( i=0; i<NHEAPS; i++ ){
+    /*for( i = 0; i < NHEAPS; i++ ){
 
         printf( "Available space in heap %d is %d\n" ,
-            i, ( heaps_ptr[i]->heap_length - ( heaps_ptr[i]->heap_curr -
-                heaps_ptr[i]-> heap_base ) ) );
+            i, ( heaps_ptr[i] -> heap_length - ( heaps_ptr[i] -> heap_curr -
+                heaps_ptr[i] -> heap_base ) ) );
 
     }*/
 
-
-    return NULL;
 }
 
 int main( void ) {
@@ -98,14 +99,14 @@ int main( void ) {
 
     heap_init();  
     
-    heapVar = (int*) shmalloc ( sizeof (int), 0 );
+    heapVar = ( int* ) shmalloc ( sizeof (int), 0 );
     if( heapVar != NULL ) {
         *heapVar = 100;
         printf( "Value of variable at heap 0 is %d\n" , *heapVar );
     
     }
 
-    var2 = (double*) shmalloc ( sizeof (double), 1 );
+    var2 = ( double* ) shmalloc ( sizeof (double), 1 );
     if( var2 != NULL ) {
     
         *var2 = 10.10;
