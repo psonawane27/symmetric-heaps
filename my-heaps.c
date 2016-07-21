@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #define SIZE 1024
 #define NHEAPS 3
@@ -25,9 +26,10 @@ void heap_init() {
             heaps_ptr[i] -> heap_curr =
             malloc(heaps_ptr[i] -> heap_length);
 
-        if ( heaps_ptr[i] -> heap_base == NULL ) {
-            
+        if ( heaps_ptr[i] -> heap_base == NULL ) {            
+
             err = 1;
+        
         }
 
     }
@@ -105,21 +107,17 @@ int main( void ) {
     
     heapVar = ( int* ) shmalloc ( sizeof (int), 0 );
     
-    if( heapVar != NULL ) {
+    assert( heapVar != NULL );
 
-        *heapVar = 100;
-        printf( "Value of variable at heap 0 is %d\n" , *heapVar );
-    
-    }
+    *heapVar = 100;
+    printf( "Value of variable at heap 0 is %d\n" , *heapVar );
 
     var2 = ( double* ) shmalloc ( sizeof (double), 1 );
     
-    if( var2 != NULL ) {
+    assert( var2 != NULL ); 
     
-        *var2 = 10.10;
-        printf( "Variable in heap 1 is %lf\n" , *var2 );
-    
-    }
+    *var2 = 10.10;
+    printf( "Variable in heap 1 is %lf\n" , *var2 );
     
     return 0;
 }
