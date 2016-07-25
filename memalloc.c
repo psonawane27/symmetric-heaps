@@ -1,7 +1,5 @@
 #include "dlmalloc.h"
 
-mspace myspace;
-
 
 void *
 shmemi_mem_init (void *base, size_t capacity) {
