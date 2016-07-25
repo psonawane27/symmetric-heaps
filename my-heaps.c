@@ -12,7 +12,6 @@ struct heap_info {
     
     void *heap_base;
     size_t heap_length;
-    //void *heap_curr;
     mspace heap_mspace;
 
 } *heaps_ptr[NHEAPS];
@@ -31,8 +30,8 @@ heap_init() {
         heaps_ptr[i] -> heap_base =
             (void *) malloc (heaps_ptr[i] -> heap_length);
         
-        printf( "Malloced addr for heap %d is: %p, capacity: %d\n", 
-            i, heaps_ptr[i] -> heap_base, heaps_ptr[i] -> heap_length );
+        //printf( "Malloced addr for heap %d is: %p, capacity: %d\n", 
+        //    i, heaps_ptr[i] -> heap_base, heaps_ptr[i] -> heap_length );
 
         heaps_ptr[i] -> heap_mspace = shmemi_mem_init( heaps_ptr[i] -> heap_base, 
             heaps_ptr[i] -> heap_length);
@@ -78,6 +77,7 @@ shmalloc( size_t size, int index ) {
         
         return orig;
 
+    }
         /*printf( "Before allocation, size of heap %d is: %d\n", 
             index, ( heaps_ptr[index] -> heap_curr - heaps_ptr[index] -> heap_base ) );*/ 
         
@@ -103,11 +103,11 @@ shmalloc( size_t size, int index ) {
 
             return NULL;
         
-        }*/
+        }
     
     }
     
-    /* for( i = 0; i < NHEAPS; i++ ){
+    for( i = 0; i < NHEAPS; i++ ){
 
         printf( "Available space in heap %d is %d\n" ,
             i, ( heaps_ptr[i] -> heap_length - ( heaps_ptr[i] -> heap_curr -
@@ -117,28 +117,39 @@ shmalloc( size_t size, int index ) {
 
 }
 
+
+void
+shmem_free ( void *addr, int index ) {
+    
+    shmemi_mem_free ( addr, heaps_ptr[index] -> heap_mspace );
+}
+
 int 
 main( void ) {
 
     int i;
-    int* heapVar;
-    double* var2;
+    int *heapVar1;
+    double *heapVar2;
 
     heap_init();  
     
-    heapVar = ( int* ) shmalloc ( sizeof (int), 0 );
+    heapVar1 = ( int* ) shmalloc ( sizeof (int), 0 );
     
-    assert( heapVar != NULL );
+    assert( heapVar1 != NULL );
 
-    *heapVar = 100;
-    printf( "Value of variable at heap 0 is %d\n" , *heapVar );
+    *heapVar1 = 100;
+    printf( "Value of variable at heap 0 is %d\n" , *heapVar1 );
 
-    var2 = ( double* ) shmalloc ( sizeof (double), 1 );
+    heapVar2 = ( double* ) shmalloc ( sizeof (double), 1 );
     
-    assert( var2 != NULL ); 
+    assert( heapVar2 != NULL ); 
     
-    *var2 = 10.10;
-    printf( "Variable in heap 1 is %lf\n" , *var2 );
+    *heapVar2 = 10.10;
+    printf( "Variable in heap 1 is %lf\n" , *heapVar2 );
     
+
+    shmem_free ( heapVar1, 0);
+    shmem_free ( heapVar2, 1);
+
     return 0;
 }

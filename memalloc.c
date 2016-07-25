@@ -1,4 +1,3 @@
-
 #include "dlmalloc.h"
 
 mspace myspace;
@@ -6,9 +5,13 @@ mspace myspace;
 
 void *
 shmemi_mem_init (void *base, size_t capacity) {
-  
+    
+    mspace myspace;
+
     myspace = create_mspace_with_base (base, capacity, 1);
-    printf("In init: mspace: %p, base: %p, capacity: %d\n", myspace, base, capacity);
+    //printf( "In init: mspace: %p, base: %p, capacity: %d\n", 
+    //  myspace, base, capacity);
+    
     return myspace;
 }
 
