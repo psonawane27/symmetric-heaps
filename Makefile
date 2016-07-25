@@ -1,3 +1,5 @@
 heaps: my-heaps.c
-	icc my-heaps.c -o heaps.x
+	icc -o heaps my-heaps.c memalloc.c dlmalloc.o
+#clean: 
+#	rm *.o heaps
 
