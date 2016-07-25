@@ -1,7 +1,9 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include "memalloc.h"
 #include "dlmalloc.h"
+
 
 #define SIZE 2048
 #define NHEAPS 2
@@ -23,7 +25,7 @@ heap_init() {
 
     for ( i = 0; i < NHEAPS; i++ ) {
 
-        heaps_ptr[i] = malloc( sizeof ( struct heap_info ) );
+        heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
         heaps_ptr[i] -> heap_length = SIZE;
         
         heaps_ptr[i] -> heap_base =
@@ -105,7 +107,7 @@ shmalloc( size_t size, int index ) {
     
     }
     
-    /*for( i = 0; i < NHEAPS; i++ ){
+    /* for( i = 0; i < NHEAPS; i++ ){
 
         printf( "Available space in heap %d is %d\n" ,
             i, ( heaps_ptr[i] -> heap_length - ( heaps_ptr[i] -> heap_curr -

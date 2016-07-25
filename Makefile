@@ -1,5 +1,10 @@
-heaps: my-heaps.c
-	icc -o heaps my-heaps.c memalloc.c dlmalloc.o
-#clean: 
-#	rm *.o heaps
+heaps: my-heaps.o dlmalloc.o memalloc.o
+	icc -o $@ $^
+
+dlmalloc.o: dlmalloc.c
+	icc -c -DONLY_MSPACES=1 -DHAVE_MORECORE=0 -DUSE_LOCKS=1 $<
+
+
+clean: 
+	rm *.o heaps
 
