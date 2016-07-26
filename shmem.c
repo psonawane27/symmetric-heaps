@@ -103,3 +103,16 @@ shmem_free ( void *addr ) {
 
     shmemi_mem_free( addr, heaps_ptr[index] -> heap_mspace );
 }
+
+void
+shmem_finalize() {
+    
+    int i;
+
+    for( i=0; i<NHEAPS; i++) {
+        free ( heaps_ptr[i] -> heap_base );
+        free ( heaps_ptr[i] );
+
+    }
+}
+

@@ -60,5 +60,7 @@ main( void ) {
     shmem_free ( listInt );
     shmem_free ( listFloat );
     
+    shmem_finalize();
+        
     return 0;
 }
