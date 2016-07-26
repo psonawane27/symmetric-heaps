@@ -1,6 +1,6 @@
 CC	=	icc
 
-heaps: my-heaps.o dlmalloc.o memalloc.o
+heaps: my-heaps.o dlmalloc.o memalloc.o shmem.o
 	$(CC) -o $@ $^
 
 dlmalloc.o: dlmalloc.c
