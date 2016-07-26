@@ -55,10 +55,10 @@ main( void ) {
     printf( "List element = %f\t", listFloat[N2-1] );
     printf( "%s\n", listFloat[ N2-1 ] == (( N2-1 )* 0.1 )? "Correct" : "Incorrect");
 
-    shmem_free ( heapVar1, 0 );
-    shmem_free ( heapVar2, 1 );
-    shmem_free ( listInt, 0 );
-    shmem_free ( listFloat, 1);
+    shmem_free ( heapVar1 );
+    shmem_free ( heapVar2 );
+    shmem_free ( listInt );
+    shmem_free ( listFloat );
     
     return 0;
 }

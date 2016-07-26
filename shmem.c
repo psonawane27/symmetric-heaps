@@ -77,9 +77,29 @@ shmalloc( size_t size, int index ) {
 
 }
 
+int
+getHeapIndex (void *addr) {
+    int index, i;
+
+    for( i=0; i<NHEAPS; i++) {
+        if( ( addr > heaps_ptr[i] -> heap_base) && 
+            ( addr < ( heaps_ptr[i] -> heap_base + heaps_ptr[i] -> heap_length ))) {
+                index = i;
+                break;
+            }
+
+    }
+
+    return index;
+}
 
 void
-shmem_free ( void *addr, int index ) {
-    
-    shmemi_mem_free ( addr, heaps_ptr[index] -> heap_mspace );
+shmem_free ( void *addr ) {
+   
+    int index;
+
+    index = getHeapIndex( addr );
+    printf( "Freeing memory from heap %d\n",index );
+
+    shmemi_mem_free( addr, heaps_ptr[index] -> heap_mspace );
 }
