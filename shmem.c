@@ -34,7 +34,7 @@ shmem_init() {
             heaps_ptr[i] -> heap_length);
         
       
-        if ( heaps_ptr[i] -> heap_mspace == (void *)0 ) {            
+        if ( heaps_ptr[i] -> heap_mspace == NULL ) {            
 
             err = 1;
         

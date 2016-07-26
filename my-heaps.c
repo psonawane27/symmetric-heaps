@@ -18,7 +18,7 @@ main( void ) {
     
     heapVar1 = ( int* ) shmalloc ( sizeof (int), 0 );
     
-    assert( heapVar1 != (void *)0 );
+    assert( heapVar1 != NULL );
 
     *heapVar1 = 100;
     printf( "Value of variable at heap 0 is %d\t" , *heapVar1 );
@@ -26,7 +26,7 @@ main( void ) {
     
     heapVar2 = ( double* ) shmalloc ( sizeof (double), 1 );
     
-    assert( heapVar2 != (void *)0 ); 
+    assert( heapVar2 != NULL ); 
     
     *heapVar2 = 10.10;
     printf( "Variable in heap 1 is %lf\t" , *heapVar2 );
@@ -34,7 +34,7 @@ main( void ) {
 
     listInt = (int* ) shmalloc ( N1 * sizeof (int), 0 );
     
-    assert( listInt != (void *)0 );
+    assert( listInt != NULL );
 
     for ( i=0; i<N1; i++) {
         listInt[i] = i;
@@ -45,7 +45,7 @@ main( void ) {
 
     listFloat = (float* ) shmalloc ( N2 * sizeof (float), 1 );
 
-    assert( listFloat != (void *)0 );
+    assert( listFloat != NULL );
 
     for ( i=0; i<N2; i++) {
         listFloat[i] = i * 0.1;
