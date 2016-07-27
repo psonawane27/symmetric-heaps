@@ -70,8 +70,23 @@ shmalloc( size_t size, int index ) {
             size, index );
            
         orig = shmemi_mem_alloc(size, heaps_ptr[index] -> heap_mspace);
+       
+        /*printf( "Orig = %p, base = %p, end = %p, mspace = %p\n", 
+            orig, heaps_ptr[index] -> heap_base , 
+            heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length, 
+            heaps_ptr[index] -> heap_mspace); */
         
-        return orig;
+        if ( orig > heaps_ptr[index] -> heap_base &&
+            orig < ( heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length )) {
+            
+            return orig;
+        
+        } else {
+            
+            shmemi_mem_free ( orig, heaps_ptr[index] -> heap_mspace ); 
+            
+            return NULL;
+        }
 
     }
 
