@@ -1,5 +1,5 @@
 #include "dlmalloc.h"
-
+#include "memalloc.h"
 
 void *
 shmemi_mem_init (void *base, size_t capacity) {

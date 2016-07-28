@@ -66,18 +66,18 @@ shmalloc( size_t size, int index ) {
         
     } else {
         
-        printf( "Allocate %d bytes in heap %d\n" , 
+        printf( "Allocate %zu bytes in heap %d\n" , 
             size, index );
            
         orig = shmemi_mem_alloc(size, heaps_ptr[index] -> heap_mspace);
        
-        /*printf( "Orig = %p, base = %p, end = %p, mspace = %p\n", 
+        /* printf( "Orig = %p, base = %p, end = %p, mspace = %p\n", 
             orig, heaps_ptr[index] -> heap_base , 
             heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length, 
             heaps_ptr[index] -> heap_mspace); */
         
         if ( orig > heaps_ptr[index] -> heap_base &&
-            orig < ( heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length )) {
+            ( char * )orig < ( ( char * )heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length )) {
             
             return orig;
         
@@ -98,7 +98,7 @@ getHeapIndex (void *addr) {
 
     for( i=0; i<NHEAPS; i++) {
         if( ( addr > heaps_ptr[i] -> heap_base) && 
-            ( addr < ( heaps_ptr[i] -> heap_base + heaps_ptr[i] -> heap_length ))) {
+            ( ( char * )addr < ( ( char * )heaps_ptr[i] -> heap_base + heaps_ptr[i] -> heap_length ))) {
                 index = i;
                 break;
             }
@@ -110,7 +110,7 @@ getHeapIndex (void *addr) {
 
 void
 shmem_free ( void *addr ) {
-   
+ 
     int index;
 
     index = getHeapIndex( addr );

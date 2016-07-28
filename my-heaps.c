@@ -9,7 +9,7 @@ main( void ) {
 
     int i;
     int *heapVar1;
-    double *heapVar2;
+    float *heapVar2;
     int *listInt;
     float *listFloat;
     int N1 = 2048, N2 = 4096;
@@ -24,13 +24,13 @@ main( void ) {
     printf( "Value of variable at heap 0 is %d\t" , *heapVar1 );
     printf( "%s\n", *heapVar1 == 100 ? "Correct" : "Incorrect" ); 
     
-    heapVar2 = ( double* ) shmalloc ( sizeof (double), 1 );
+    heapVar2 = ( float* ) shmalloc ( sizeof (float), 1 );
     
     assert( heapVar2 != NULL ); 
     
     *heapVar2 = 10.10;
     printf( "Variable in heap 1 is %lf\t" , *heapVar2 );
-    printf( "%s\n", abs(*heapVar2 - 10.10) < 0.0001 ? "Correct" : "Incorrect" );    
+    printf( "%s\n", abs(*heapVar2 - ( float )10.10) < 0.0001 ? "Correct" : "Incorrect" );    
 
     listInt = (int* ) shmalloc ( N1 * sizeof (int), 0 );
     
@@ -48,12 +48,12 @@ main( void ) {
     assert( listFloat != NULL );
 
     for ( i=0; i<N2; i++) {
-        listFloat[i] = i * 0.1;
+        listFloat[i] = ( float )i * ( float )0.1;
     }
 
 
     printf( "List element = %f\t", listFloat[N2-1] );
-    printf( "%s\n", abs(listFloat[ N2-1 ] - (( N2-1 )* 0.1 )) < 0.0001 ? "Correct" : "Incorrect");
+    printf( "%s\n", abs(listFloat[ N2-1 ] - ( float )(( N2-1 )* 0.1 )) < 0.0001 ? "Correct" : "Incorrect");
 
     shmem_free ( heapVar1 );
     shmem_free ( heapVar2 );
