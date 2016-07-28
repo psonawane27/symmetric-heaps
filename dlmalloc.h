@@ -8,7 +8,7 @@
 #ifndef _DLMALLOC_H
 #define _DLMALLOC_H 1
 
-#include <sys/types.h>
+#include "sys/types.h"
 
 #define ONLY_MSPACES 1
 #define HAVE_MORECORE 0

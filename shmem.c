@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include "memalloc.h"
 #include "dlmalloc.h"
 #include "shmem.h"
@@ -24,24 +25,34 @@ shmem_init() {
     for ( i = 0; i < NHEAPS; i++ ) {
 
         heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
-        heaps_ptr[i] -> heap_length = SIZE;
         
-        heaps_ptr[i] -> heap_base =
-            (void *) malloc (heaps_ptr[i] -> heap_length);  
-    
-
-        heaps_ptr[i] -> heap_mspace = shmemi_mem_init( heaps_ptr[i] -> heap_base, 
-            heaps_ptr[i] -> heap_length);
-        
-      
-        if ( heaps_ptr[i] -> heap_mspace == NULL ) {            
-
+        if ( heaps_ptr[i] == NULL ) {
+            
             err = 1;
+
+        } else {
+
+            heaps_ptr[i] -> heap_length = SIZE;
         
+            heaps_ptr[i] -> heap_base =
+                (void *) malloc (heaps_ptr[i] -> heap_length);  
+    
+            if ( heaps_ptr[i] -> heap_base == NULL ) {
+            
+                err = 1;
+
+            } else {
+                heaps_ptr[i] -> heap_mspace = shmemi_mem_init( heaps_ptr[i] -> heap_base, 
+                    heaps_ptr[i] -> heap_length);
+        
+                if ( heaps_ptr[i] -> heap_mspace == NULL ) {            
+
+                    err = 1;
+        
+                }   
+            }
         }
-
     }
-
     if ( err == 1 ) {
 
         printf( "Error initializing heap!\n" );
@@ -62,7 +73,7 @@ shmalloc( size_t size, int index ) {
     
         printf( "Error: Heap index out of bound!\n" );
         
-        return NULL;
+        return ( void * )NULL;
         
     } else {
         
@@ -84,8 +95,9 @@ shmalloc( size_t size, int index ) {
         } else {
             
             shmemi_mem_free ( orig, heaps_ptr[index] -> heap_mspace ); 
+            free( orig );
             
-            return NULL;
+            return ( void * )NULL;
         }
 
     }
@@ -95,6 +107,8 @@ shmalloc( size_t size, int index ) {
 int
 getHeapIndex (void *addr) {
     int index, i;
+    
+    index = -1;
 
     for( i=0; i<NHEAPS; i++) {
         if( ( addr > heaps_ptr[i] -> heap_base) && 
@@ -126,8 +140,10 @@ shmem_finalize() {
 
     for( i=0; i<NHEAPS; i++) {
         free ( heaps_ptr[i] -> heap_base );
+        //free ( heaps_ptr[i] -> heap_mspace );
         free ( heaps_ptr[i] );
 
     }
+   
 }
 

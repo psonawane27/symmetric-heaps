@@ -3,7 +3,6 @@
 #include <assert.h>
 #include "shmem.h"
 
-
 int 
 main( void ) {
 

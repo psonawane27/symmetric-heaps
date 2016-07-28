@@ -1,4 +1,3 @@
-#include <sys/types.h>
 #include "dlmalloc.h"
 
 extern void *shmemi_mem_init (void *base, size_t capacity);
