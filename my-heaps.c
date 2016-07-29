@@ -49,8 +49,7 @@ main( void ) {
 
     for ( i=0; i<N2; i++) {
         listFloat[i] = ( float )i * ( float )0.1;
-    }
-
+    } 
 
     printf( "List element = %f\t", listFloat[N2-1] );
     printf( "%s\n", fabs(listFloat[ N2-1 ] - ( float )(( N2-1 )* 0.1 )) < 0.0001 ? "Correct" : "Incorrect");
