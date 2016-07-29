@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <assert.h>
 #include "shmem.h"
 
@@ -29,7 +30,7 @@ main( void ) {
     
     *heapVar2 = 10.10;
     printf( "Variable in heap 1 is %lf\t" , *heapVar2 );
-    printf( "%s\n", abs(*heapVar2 - ( float )10.10) < 0.0001 ? "Correct" : "Incorrect" );    
+    printf( "%s\n", fabs( *heapVar2 - ( float )10.10)  < 0.0001 ? "Correct" : "Incorrect" );    
 
     listInt = (int* ) shmalloc ( N1 * sizeof (int), 0 );
     
@@ -52,7 +53,7 @@ main( void ) {
 
 
     printf( "List element = %f\t", listFloat[N2-1] );
-    printf( "%s\n", abs(listFloat[ N2-1 ] - ( float )(( N2-1 )* 0.1 )) < 0.0001 ? "Correct" : "Incorrect");
+    printf( "%s\n", fabs(listFloat[ N2-1 ] - ( float )(( N2-1 )* 0.1 )) < 0.0001 ? "Correct" : "Incorrect");
 
     shmem_free ( heapVar1 );
     shmem_free ( heapVar2 );

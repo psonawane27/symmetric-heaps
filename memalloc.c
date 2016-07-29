@@ -15,7 +15,7 @@ shmemi_mem_init (void *base, size_t capacity) {
 
 void *
 shmemi_mem_alloc (size_t size, mspace heap_space) {
-    
+   
     void *addr = mspace_malloc (heap_space, size);
 
     return addr;
