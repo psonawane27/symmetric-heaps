@@ -3,49 +3,9 @@
 #include <math.h>
 #include <assert.h>
 #include "shmem.h"
-#include <memkind.h>
 
 int 
 main( void ) {
-    memkind_t kind; // = malloc ( sizeof( memkind_t ));
-    //printf( "After memkind_t malloc %p\n", kind );
-    
-    //const struct memkind_ops *ops = malloc ( sizeof( struct memkind_ops ));
-    //printf( "After ops malloc: %p\n", ops );
-
-    //const char name[] = "MEMKIND_DEFAULT";
-    
-    //int *num = malloc(sizeof(int));
-    int num;
-    printf ( "Memkind: %d \n", memkind_get_num_kind(&num) );
-    printf ( "num_kind: %d \n", num );
-
-    memkind_get_kind_by_name( "memkind_hbw", &kind );
-    printf( "After get_kind_by_name: %p\n", kind );
-    
-    //size_t *total = malloc( sizeof( size_t )); 
-    //size_t *free = malloc( sizeof( size_t ));
-    size_t total, free;
-    memkind_get_size( kind, &total, &free );
-    printf( "Total: %zu and free: %zu\n", total, free );
-    
-    /* int temp = memkind_create(ops, name, kind );
-    printf ( "After memkind_create: %d\n", temp );
-
-    
-    int temp = ops -> create( *kind, ops, name );
-    printf( "After ops.create: %d\n", temp );
-    
-    size_t size = 1024;
-    void *t = ops -> malloc( *kind, size );
-    printf( "After ops.malloc: %p\n", t );
-
-    temp = memkind_create(ops, name, kind );
-    printf ( "After memkind_create: %d\n", temp );
-
-    *num = malloc(sizeof(int));
-    printf ( "Memkind: %d \n", memkind_get_num_kind(num) );
-    */
 
     int i;
     int *heapVar1;

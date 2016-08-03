@@ -4,6 +4,7 @@
 #include "memalloc.h"
 #include "dlmalloc.h"
 #include "shmem.h"
+#include <memkind.h>
 
 #define SIZE 32768
 #define NHEAPS 2
@@ -16,11 +17,15 @@ struct heap_info {
 
 } *heaps_ptr[NHEAPS];
 
+static memkind_t kind;
+
 void
 shmem_init() {
     
     int i;
     int err = -1;
+
+    memkind_get_kind_by_name( "memkind_hbw", &kind );
 
     for ( i = 0; i < NHEAPS; i++ ) {
 
@@ -34,8 +39,14 @@ shmem_init() {
 
             heaps_ptr[i] -> heap_length = SIZE;
         
-            heaps_ptr[i] -> heap_base =
-                (void *) malloc (heaps_ptr[i] -> heap_length);  
+            heaps_ptr[i] -> heap_base = memkind_malloc( kind, 
+                heaps_ptr[i] -> heap_length);
+            
+            /*printf( "Memkind kind: %p and addr: %p\n", kind, 
+                heaps_ptr[i] -> heap_base );*/
+            
+            //heaps_ptr[i] -> heap_base =
+            //    (void *) malloc (heaps_ptr[i] -> heap_length);  
     
             if ( heaps_ptr[i] -> heap_base == NULL ) {
             
@@ -139,7 +150,12 @@ shmem_finalize() {
     int i;
 
     for( i=0; i<NHEAPS; i++) {
-        free ( heaps_ptr[i] -> heap_base );
+        //free ( heaps_ptr[i] -> heap_base );
+        /*printf("Freeing: kind %p, mem base %p\n", kind, 
+            heaps_ptr[i] -> heap_base );*/
+        
+        memkind_free( kind, heaps_ptr[i] -> heap_base );
+        
         //free ( heaps_ptr[i] -> heap_mspace );
         free ( heaps_ptr[i] );
 
