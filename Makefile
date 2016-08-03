@@ -6,6 +6,8 @@ LD = $(CC)
 
 LDFLAGS = $(CFLAGS)
 
+LIBS = -lmemkind
+
 heaps: my-heaps.o dlmalloc.o memalloc.o shmem.o
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 
