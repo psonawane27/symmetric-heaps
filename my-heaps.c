@@ -20,7 +20,7 @@ main( void ) {
     printf ( "Memkind: %d \n", memkind_get_num_kind(&num) );
     printf ( "num_kind: %d \n", num );
 
-    memkind_get_kind_by_name( "MEMKIND_HBW", &kind );
+    memkind_get_kind_by_name( "memkind_hbw", &kind );
     printf( "After get_kind_by_name: %p\n", kind );
     
     //size_t *total = malloc( sizeof( size_t )); 
