@@ -15,47 +15,50 @@ struct heap_info {
     void *heap_base;
     size_t heap_length;
     mspace heap_mspace;
+    char *name;
+    memkind_t kind;
 
 } *heaps_ptr[NHEAPS];
-
-static memkind_t kind;
 
 void
 shmem_init() {
     
     int i;
     int err = -1;
-    
-    if( hbw_check_available() == 0 ) {
-     
-        memkind_get_kind_by_name( "memkind_hbw", &kind );
-        printf( "HBW memory detected.\nAllocating on hbw memory. " ); 
 
-    } else {
-    
-        memkind_get_kind_by_name( "memkind_default", &kind );
-        printf( "HBW memory not detected.\nAllocating on standard memory. " );
+    for ( i = 0; i < NHEAPS; i++ ) {
 
-    }
-    if (kind == (void *) NULL) {
+        heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
         
-        err = 1;
-
-    } else {
-
-        for ( i = 0; i < NHEAPS; i++ ) {
-
-            heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
-        
-            if ( heaps_ptr[i] == NULL ) {
+        if ( heaps_ptr[i] == NULL ) {
             
+            err = 1;
+
+        } else {
+
+            if( hbw_check_available() == 0 && i%2 == 0 ) {
+                
+                heaps_ptr[i] -> name = "memkind_hbw";
+                memkind_get_kind_by_name( heaps_ptr[i] -> name, &heaps_ptr[i] -> kind );
+                
+                printf( "Hbw memory detected.\nAllocating heap %d on hbw memory.\n", i );
+           
+           } else {
+
+                heaps_ptr[i] -> name = "memkind_default";                         
+                memkind_get_kind_by_name( heaps_ptr[i] -> name, &heaps_ptr[i] -> kind );
+
+                printf( "Allocating heap %d  on standard memory.\n", i );
+
+           }
+           if ( heaps_ptr[i] -> kind == (void *) NULL) {
+
                 err = 1;
 
             } else {
-
                 heaps_ptr[i] -> heap_length = SIZE;
-        
-                heaps_ptr[i] -> heap_base = memkind_malloc( kind, 
+       
+                heaps_ptr[i] -> heap_base = memkind_malloc( heaps_ptr[i] -> kind,       
                     heaps_ptr[i] -> heap_length);
             
                 /*printf( "Memkind kind: %p and addr: %p\n", kind, 
@@ -171,7 +174,7 @@ shmem_finalize() {
         /*printf("Freeing: kind %p, mem base %p\n", kind, 
             heaps_ptr[i] -> heap_base );*/
         
-        memkind_free( kind, heaps_ptr[i] -> heap_base );
+        memkind_free( heaps_ptr[i] -> kind, heaps_ptr[i] -> heap_base );
         
         //free ( heaps_ptr[i] -> heap_mspace );
         free ( heaps_ptr[i] );
