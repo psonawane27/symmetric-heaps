@@ -25,42 +25,47 @@ shmem_init() {
     int i;
     int err = -1;
 
-    memkind_get_kind_by_name( "memkind_default", &kind );
+    memkind_get_kind_by_name( "memkind_hbw", &kind );
 
-    for ( i = 0; i < NHEAPS; i++ ) {
+    if (kind == (void *) NULL) {
+        err = 1;
+    } else {
 
-        heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
+        for ( i = 0; i < NHEAPS; i++ ) {
+
+            heaps_ptr[i] = (struct heap_info *) malloc( sizeof ( struct heap_info ) );
         
-        if ( heaps_ptr[i] == NULL ) {
-            
-            err = 1;
-
-        } else {
-
-            heaps_ptr[i] -> heap_length = SIZE;
-        
-            heaps_ptr[i] -> heap_base = memkind_malloc( kind, 
-                heaps_ptr[i] -> heap_length);
-            
-            /*printf( "Memkind kind: %p and addr: %p\n", kind, 
-                heaps_ptr[i] -> heap_base );*/
-            
-            //heaps_ptr[i] -> heap_base =
-            //    (void *) malloc (heaps_ptr[i] -> heap_length);  
-    
-            if ( heaps_ptr[i] -> heap_base == NULL ) {
+            if ( heaps_ptr[i] == NULL ) {
             
                 err = 1;
 
             } else {
-                heaps_ptr[i] -> heap_mspace = shmemi_mem_init( heaps_ptr[i] -> heap_base, 
-                    heaps_ptr[i] -> heap_length);
-        
-                if ( heaps_ptr[i] -> heap_mspace == NULL ) {            
 
-                    err = 1;
+                heaps_ptr[i] -> heap_length = SIZE;
         
-                }   
+                heaps_ptr[i] -> heap_base = memkind_malloc( kind, 
+                    heaps_ptr[i] -> heap_length);
+            
+                /*printf( "Memkind kind: %p and addr: %p\n", kind, 
+                    heaps_ptr[i] -> heap_base );*/
+            
+                //heaps_ptr[i] -> heap_base =
+                //    (void *) malloc (heaps_ptr[i] -> heap_length);  
+    
+                if ( heaps_ptr[i] -> heap_base == NULL ) {
+            
+                    err = 1;
+
+                } else {
+                    heaps_ptr[i] -> heap_mspace = shmemi_mem_init( heaps_ptr[i] -> heap_base, 
+                        heaps_ptr[i] -> heap_length);
+        
+                    if ( heaps_ptr[i] -> heap_mspace == NULL ) {            
+
+                        err = 1;
+        
+                    }   
+                }
             }
         }
     }
