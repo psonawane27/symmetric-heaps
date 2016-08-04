@@ -5,6 +5,7 @@
 #include "dlmalloc.h"
 #include "shmem.h"
 #include <memkind.h>
+#include <hbwmalloc.h>
 
 #define SIZE 32768
 #define NHEAPS 2
@@ -24,11 +25,22 @@ shmem_init() {
     
     int i;
     int err = -1;
+    
+    if( hbw_check_available() == 0 ) {
+     
+        memkind_get_kind_by_name( "memkind_hbw", &kind );
+        printf( "HBW memory detected.\nAllocating on hbw memory. " ); 
 
-    memkind_get_kind_by_name( "memkind_default", &kind );
+    } else {
+    
+        memkind_get_kind_by_name( "memkind_default", &kind );
+        printf( "HBW memory not detected.\nAllocating on standard memory. " );
 
+    }
     if (kind == (void *) NULL) {
+        
         err = 1;
+
     } else {
 
         for ( i = 0; i < NHEAPS; i++ ) {
