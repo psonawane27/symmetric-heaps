@@ -25,7 +25,7 @@ shmem_init() {
     int i;
     int err = -1;
 
-    memkind_get_kind_by_name( "memkind_hbw", &kind );
+    memkind_get_kind_by_name( "memkind_default", &kind );
 
     for ( i = 0; i < NHEAPS; i++ ) {
 
