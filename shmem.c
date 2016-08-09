@@ -25,6 +25,23 @@ shmem_init() {
     
     int i;
     int err = -1;
+    
+    /*
+    size_t size = 2048;
+    size_t t, f;
+    memkind_t k;
+    memkind_get_kind_by_name( "memkind_default", &k );
+    memkind_get_size(k, &t, &f );
+    printf( "Initial: free %zu total %zu kind %p\n", f, t, k );
+    void *addr = memkind_malloc( k, size );
+    size_t temp = f;
+    memkind_get_size( k, &t, &f);
+    temp = temp - f;
+    printf( "After malloc: free %zu, tot %zu kind %p addr %p allocate = %zu\n", f, t, k, addr, temp );
+    memkind_free( k, addr);
+    memkind_get_size( k, &t, &f);
+    printf( "After free: free %zu tot %zu kind %p\n",f, t, k );
+    */
 
     for ( i = 0; i < NHEAPS; i++ ) {
 
@@ -45,7 +62,7 @@ shmem_init() {
            
            } else {
 
-                heaps_ptr[i] -> name = "memkind_default";                         
+                heaps_ptr[i] -> name = "memkind_hbw";                         
                 memkind_get_kind_by_name( heaps_ptr[i] -> name, &heaps_ptr[i] -> kind );
 
                 printf( "Allocating heap %d  on standard memory.\n", i );
@@ -56,11 +73,21 @@ shmem_init() {
                 err = 1;
 
             } else {
+                
+                size_t total, available;
+                memkind_get_size( heaps_ptr[i] -> kind, &total, &available );
                 heaps_ptr[i] -> heap_length = SIZE;
-       
+                printf( "Heap %d, kind: %p total: %zu free: %zu\n" ,
+                            i, heaps_ptr[i] -> kind, total, available );
+
                 heaps_ptr[i] -> heap_base = memkind_malloc( heaps_ptr[i] -> kind,       
                     heaps_ptr[i] -> heap_length);
             
+                memkind_get_size( heaps_ptr[i] -> kind, &total, &available );
+
+                printf( "After memkind_malloc Heap %d kind: %p total: %zu free: %zu\n" ,
+                            i, heaps_ptr[i] -> kind, total, available );
+
                 /*printf( "Memkind kind: %p and addr: %p\n", kind, 
                     heaps_ptr[i] -> heap_base );*/
             
@@ -108,9 +135,11 @@ shmalloc( size_t size, int index ) {
         
     } else {
         
-        printf( "Allocate %zu bytes in heap %d\n" , 
-            size, index );
-           
+        size_t total, available;
+        memkind_get_size( heaps_ptr[index] -> kind, &total, &available );
+        printf( "Allocate %zu bytes in heap %d kind: %p total: %zu free: %zu\n" , 
+            size, index, heaps_ptr[index] -> kind, total, available );
+          
         orig = shmemi_mem_alloc(size, heaps_ptr[index] -> heap_mspace);
        
         /* printf( "Orig = %p, base = %p, end = %p, mspace = %p\n", 
@@ -118,6 +147,11 @@ shmalloc( size_t size, int index ) {
             heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length, 
             heaps_ptr[index] -> heap_mspace); */
         
+        memkind_get_size( heaps_ptr[index] -> kind, &total, &available );
+
+        printf( "After allocating %zu bytes in heap %d kind: %p total: %zu free: %zu\n" ,
+                    size, index, heaps_ptr[index] -> kind, total, available );
+
         if ( orig > heaps_ptr[index] -> heap_base &&
             ( char * )orig < ( ( char * )heaps_ptr[index] -> heap_base + heaps_ptr[index] -> heap_length )) {
             
@@ -168,14 +202,18 @@ void
 shmem_finalize() {
     
     int i;
-
+    size_t total, available;
     for( i=0; i<NHEAPS; i++) {
         //free ( heaps_ptr[i] -> heap_base );
-        /*printf("Freeing: kind %p, mem base %p\n", kind, 
-            heaps_ptr[i] -> heap_base );*/
+        
+        memkind_get_size( heaps_ptr[i] -> kind, &total, &available );
+        printf("Freeing: kind %p, mem base %p free: %zu\n", heaps_ptr[i] -> kind, 
+            heaps_ptr[i] -> heap_base, available );
         
         memkind_free( heaps_ptr[i] -> kind, heaps_ptr[i] -> heap_base );
         
+        memkind_get_size( heaps_ptr[i] -> kind, &total, &available );
+        printf( "After freeing avialable: %zu\n", available );
         //free ( heaps_ptr[i] -> heap_mspace );
         free ( heaps_ptr[i] );
 
