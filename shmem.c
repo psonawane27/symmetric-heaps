@@ -27,10 +27,10 @@ shmem_init() {
     int err = -1;
     
     /*
-    size_t size = 2048;
+    size_t size = 65536;
     size_t t, f;
     memkind_t k;
-    memkind_get_kind_by_name( "memkind_default", &k );
+    memkind_get_kind_by_name( "memkind_hbw", &k );
     memkind_get_size(k, &t, &f );
     printf( "Initial: free %zu total %zu kind %p\n", f, t, k );
     void *addr = memkind_malloc( k, size );
@@ -41,6 +41,18 @@ shmem_init() {
     memkind_free( k, addr);
     memkind_get_size( k, &t, &f);
     printf( "After free: free %zu tot %zu kind %p\n",f, t, k );
+    
+    addr = hbw_malloc( size );
+    printf( "After hbw_malloc: addr: %p\n", addr );
+
+    memkind_get_size( k, &t, &f);
+    printf( "After hbw_malloc: free %zu tot %zu kind %p\n",f, t, k );
+
+    addr = hbw_malloc( size );
+    printf( "After hbw_malloc: addr: %p\n", addr );
+            
+    memkind_get_size( k, &t, &f);
+    printf( "After hbw_malloc: free %zu tot %zu kind %p\n",f, t, k );
     */
 
     for ( i = 0; i < NHEAPS; i++ ) {
@@ -62,7 +74,7 @@ shmem_init() {
            
            } else {
 
-                heaps_ptr[i] -> name = "memkind_hbw";                         
+                heaps_ptr[i] -> name = "memkind_default";                         
                 memkind_get_kind_by_name( heaps_ptr[i] -> name, &heaps_ptr[i] -> kind );
 
                 printf( "Allocating heap %d  on standard memory.\n", i );
